@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Login</title>
+<style>
+  :root{
+    --gold:#c6a35d;
+    --gold-light:#e8d2a0;
+    --ink:#0c0d10;
+    --ink-2:#15171c;
+    --glass: rgba(255,255,255,0.06);
+    --glass-border: rgba(255,255,255,0.14);
+  }
+
+  *{box-sizing:border-box;}
+
+  body{
+    margin:0;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:'Segoe UI', system-ui, -apple-system, sans-serif;
+    background:
+      radial-gradient(circle at 20% 20%, rgba(198,163,93,0.10), transparent 40%),
+      radial-gradient(circle at 80% 80%, rgba(198,163,93,0.08), transparent 45%),
+      linear-gradient(160deg, var(--ink) 0%, var(--ink-2) 60%, #0a0a0c 100%);
+    overflow:hidden;
+    perspective:1400px;
+  }
+
+  /* ambient floating lens rings — pure decoration, no logic */
+  .lens-ring{
+    position:absolute;
+    border-radius:50%;
+    border:1px solid rgba(198,163,93,0.18);
+    box-shadow: inset 0 0 40px rgba(198,163,93,0.08);
+    animation: drift 14s ease-in-out infinite;
+  }
+  .lens-ring.r1{width:420px;height:420px; top:-120px; left:-140px; animation-delay:0s;}
+  .lens-ring.r2{width:300px;height:300px; bottom:-100px; right:-80px; animation-delay:2s;}
+  .lens-ring.r3{width:180px;height:180px; top:60%; left:8%; animation-delay:4s; opacity:.6;}
+
+  @keyframes drift{
+    0%,100%{ transform: translateY(0) rotate(0deg); }
+    50%{ transform: translateY(-18px) rotate(6deg); }
+  }
+
+  .stage{
+    position:relative;
+    width:380px;
+    transform-style:preserve-3d;
+    transform: rotateX(4deg) rotateY(-4deg);
+    transition: transform .4s ease;
+    animation: rise .9s cubic-bezier(.2,.9,.25,1) both;
+  }
+  .stage:hover{ transform: rotateX(1deg) rotateY(-1deg); }
+
+  @keyframes rise{
+    from{ opacity:0; transform: translateY(40px) rotateX(14deg) rotateY(-8deg); }
+    to{ opacity:1; transform: translateY(0) rotateX(4deg) rotateY(-4deg); }
+  }
+
+  .card{
+    position:relative;
+    padding:46px 38px 38px;
+    border-radius:22px;
+    background: var(--glass);
+    border:1px solid var(--glass-border);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    box-shadow:
+      0 30px 60px -20px rgba(0,0,0,0.7),
+      0 0 0 1px rgba(255,255,255,0.03) inset,
+      0 1px 0 rgba(255,255,255,0.08) inset;
+    transform: translateZ(20px);
+  }
+
+  /* gold facet line top — signature element, like a lens edge coating */
+  .card::before{
+    content:"";
+    position:absolute;
+    top:0; left:10%; right:10%;
+    height:2px;
+    background: linear-gradient(90deg, transparent, var(--gold-light), transparent);
+    filter: drop-shadow(0 0 6px rgba(198,163,93,0.6));
+  }
+
+  .brand{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin-bottom:8px;
+  }
+  .monogram{
+    width:54px;height:54px;
+    border-radius:50%;
+    border:1.5px solid var(--gold);
+    display:flex;align-items:center;justify-content:center;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size:20px;
+    letter-spacing:1px;
+    color:var(--gold-light);
+    background: radial-gradient(circle at 30% 30%, rgba(198,163,93,0.18), transparent 70%);
+    box-shadow: 0 0 18px rgba(198,163,93,0.25), inset 0 0 10px rgba(198,163,93,0.15);
+  }
+
+  h2{
+    text-align:center;
+    color:#f4efe4;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-weight:500;
+    letter-spacing:0.5px;
+    margin:18px 0 4px;
+    font-size:24px;
+  }
+  .sub{
+    text-align:center;
+    color:#9a9a9f;
+    font-size:12.5px;
+    letter-spacing:0.4px;
+    margin:0 0 28px;
+  }
+
+  form{ display:flex; flex-direction:column; gap:18px; }
+
+  .field{
+    position:relative;
+  }
+  .field input{
+    width:100%;
+    padding:14px 16px;
+    background: rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.12);
+    border-radius:10px;
+    color:#f4efe4;
+    font-size:14.5px;
+    outline:none;
+    transition: border-color .25s, box-shadow .25s, background .25s;
+  }
+  .field input::placeholder{ color:#73747a; }
+  .field input:focus{
+    border-color: var(--gold);
+    background: rgba(198,163,93,0.06);
+    box-shadow: 0 0 0 3px rgba(198,163,93,0.15), 0 8px 20px -8px rgba(198,163,93,0.3);
+  }
+
+  button[type="submit"]{
+    margin-top:8px;
+    padding:14px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    font-size:14.5px;
+    font-weight:600;
+    letter-spacing:0.6px;
+    color:#1a1305;
+    background: linear-gradient(135deg, var(--gold-light), var(--gold));
+    box-shadow: 0 12px 24px -10px rgba(198,163,93,0.55), inset 0 1px 0 rgba(255,255,255,0.5);
+    transform: translateZ(10px);
+    transition: transform .2s ease, box-shadow .2s ease, filter .2s ease;
+  }
+  button[type="submit"]:hover{
+    transform: translateZ(14px) translateY(-2px);
+    box-shadow: 0 16px 30px -10px rgba(198,163,93,0.65), inset 0 1px 0 rgba(255,255,255,0.5);
+    filter:brightness(1.05);
+  }
+  button[type="submit"]:active{
+    transform: translateZ(6px) translateY(0);
+  }
+
+  .foot{
+    text-align:center;
+    margin-top:22px;
+    font-size:12px;
+    color:#6f7077;
+    letter-spacing:0.3px;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .lens-ring, .stage{ animation:none !important; }
+  }
+
+  @media (max-width:420px){
+    .stage{ width:90vw; }
+    .card{ padding:34px 24px 28px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="lens-ring r1"></div>
+<div class="lens-ring r2"></div>
+<div class="lens-ring r3"></div>
+
+<div class="stage">
+  <div class="card">
+    <div class="brand"><div class="monogram">F·L</div></div>
+    <h2>Welcome back</h2>
+    <p class="sub">Sign in to your account</p>
+
+    <form id="loginForm">
+      <div class="field">
+        <input type="email" id="email" placeholder="Email" required>
+      </div>
+      <div class="field">
+        <input type="password" id="password" placeholder="Password" required>
+      </div>
+      <button type="submit">Login</button>
+    </form>
+
+    <p class="foot">Secured access</p>
+  </div>
+</div>
+
+<script type="module" src="app.js"></script>
+
+</body>
+</html>
